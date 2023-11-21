@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue监测数据改变的原理</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+
+    <div id="root">
+        <h2>{{name}}</h2>
+        <h2>{{country}}</h2>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el:'#root',
+        // Vue 会对data所有数据添加getter和setter，
+        // 包括 所有对象的属性 和 所有数组中的元素， 
+        // Vue会 递归遍历所有的层级， 即 Vue会一直追溯到最深层的（包括对象和数组） 对象的属性 / 数组的元素
+        data:{
+            name: 'tyler',
+            country: 'china',
+            transport: {
+                name:'kawasaki nijia 250',
+                type: {
+                    name: 'mote',
+                     type: 'Street Bike'
+                },
+            },
+            friendCircle: [
+                {name: 'jack', age: 18}
+            ]
+        }
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VueComponent</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+  </head>
+  <body>
+    <!-- 
+        关于VueComponent:
+            1.person组件本质是一个名为VueComporent的构造函数，且不是程序员定义的，是Vue.extend生成的。
+
+            2.我们只需要写<schoo1/>或<schoo1><schoo1>，Vue解析时会帮我们创建schoo1组件的实例对象。
+                即Vue帮我们执行的: new VueComponent(options)
+
+            3.特别注意:每次调用Vue.extend，返回的都是一个全新的VueComponent!!!
+            
+            4.关于this指向:
+                (1).组件配置中:
+                    data函数、methods中的函岁watch中的函数、computed中的函数 它们的tis均是 VueComponent实例对象 
+                (2).new Vue()配置中:
+                    data函数、methods中的函娄watch中的函数、computed中的函数 它们的this均是 Vue实例对象。
+            
+            5.VueComponent的实例对象，简称vc(也可称之为:组件实例对象)。
+              Vue的实例对象，简称vm。
+     -->
+
+    <div id="root">
+      <person></person>
+      <hello></hello>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    // 定义person组件
+    const person = Vue.extend({
+      template: `
+                <div>
+                    <h2>{{personName}}</h2>
+                    <button @click="showThis()">我是按钮</button>
+                </div>
+            `,
+      data() {
+        return {
+          personName: "tyler",
+        };
+      },
+      methods: {
+        showThis() {
+          console.log("person\n", this);
+        },
+      },
+    });
+
+    // 定义tmp组件
+    const tmp = Vue.extend({
+      template: `
+            <span>hello</span>
+        `,
+    });
+
+    // 定义hello组件
+    const hello = Vue.extend({
+      template: `
+            <div>
+                <h2>{{msg}}</h2>
+                <tmp></tmp>
+            </div>
+        `,
+      data() {
+        return {
+          msg: "Hello!",
+        };
+      },
+      components: {
+        tmp,
+      },
+    });
+
+    // console.log(person);
+    // console.log(hello);
+    // console.log("person === hello" + person === hello);
+
+    // 创建vue实例
+    new Vue({
+      el: "#root",
+      components: {
+        person,
+        hello,
+      },
+    });
+  </script>
+</html>

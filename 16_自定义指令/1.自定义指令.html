@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>自定义指令</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+  </head>
+
+  <body>
+    <!--         
+        自定义指令总结:
+            定义语法:
+                (1).局部指令:
+                    new Vue({
+                        directives:{
+                            指令名:配置对象
+                        }
+
+                    或
+                    
+                    new Vue(
+                        directives{
+                            指令名:回调函数
+                        }
+                (2).全局指令:
+                    Vue.directive(指令名,配置对象) 
+                    
+                    或
+
+                    Vue.directive(指令名,回调函数)
+
+                二、配置对象中常用的3个回调:
+                    (1).bind: 指令与元素成功绑定时调用。
+                    (2).inserted: 指令所在元素被插入页面时调用。
+                    (3).update:指令所在模板结构被重新解析时调用。
+                三、备注:
+                    1.指令定义时不加v-，但使用时要加v-;
+                    2.指令名如果是多个单词，要使用kebab-case（短横线连接命名法）命名方式，不要用camelCase（驼峰式命名法）命名。
+     -->
+
+    <!-- 
+        需求1：定义一个 v-big指令，和 v-text指令 功能相似，但会把保存的值变大10倍。
+        需求2：定义一个 v-fbind指令，和 v-bind 功能类似，但可以让其它所绑定的input元素默认获取焦点。
+     -->
+
+    <div id="root">
+      <h2>{{n}}</h2>
+      <h2 v-big-number="n"></h2>
+      <button @click="n++">点我让n + 1</button>
+      <hr />
+      <input type="text" v-fbind:value="n" />
+    </div>
+
+    <div id="root2">
+      <h2>{{n}}</h2>
+      <h2 v-big-number="n"></h2>
+      <button @click="n++">点我让n + 1</button>
+      <input type="text" v-fbind:value="n" />
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    Vue.config.productionTip = false;
+    // 定义全局指令
+    // 函数式：
+    // Vue.directive('big-number', (element, binding) => {
+    //     element.innerText = binding.value * 10;
+    // });
+    //
+    //  对象式：
+    // Vue.directive('fbind', {
+    //     bind(element, binding) {
+    //         element.value = binding.value;
+
+    //         console.log(this);
+    //     },
+    //     inserted(element, binding) {
+    //         element.focus();
+
+    //         console.log(this);
+    //     },
+    //     update(element, binding) {
+    //         element.value = binding.value;
+
+    //         console.log(this);
+    //     }
+    // })
+
+    new Vue({
+      el: "#root",
+      data: {
+        n: 1,
+      },
+      directives: {
+        // 接收到的第一个参数是： 真实dom节点元素
+        // 接收到的第二个参数是： vue为 元素 和 指令 进行的绑定数据的对象
+        // 函数被调用的时候：
+        //      1. 指令与元素成功绑定的时候（一开始）
+        //      2. 指令所在的模板被重新解析时
+        // 完整写法：
+        // 'big-number': function(element, binding) {
+        // 简写：
+        "big-number"(element, binding) {
+          element.innerText = binding.value * 10;
+
+          console.log(binding);
+          //注意： 这里的this是window
+          console.log(this);
+        },
+
+        // 函数写法的一个缺陷： 直接使用函数写法，没有办法直接获取焦点
+
+        // 出现问题：刚加载页面后input 没有获取焦点，点击button重新解析模板后，input获取了焦点。
+        // 原因：
+        //      真实dom是由模板中的虚拟dom生成的，
+        //      第一次解析页面的时候会生成真实dom，所以不能获取焦点；
+        //      而重新解析的时候不会更替真实dom，所以可以获取焦点。
+        //      （详见 2.回顾操作DOM）
+        fbind: {
+          // 其实函数式就是去掉了 inserted 时候的调用
+
+          // 在指令中所有的this都是window
+
+          // 元素与指令成功绑定时
+          bind(element, binding) {
+            element.value = binding.value;
+
+            console.log(this);
+          },
+          // 指令所在元素被插入页面时
+          inserted(element, binding) {
+            element.focus();
+
+            console.log(this);
+          },
+          // 指令所在模板被重新解析时
+          update(element, binding) {
+            element.value = binding.value;
+
+            console.log(this);
+          },
+        },
+      },
+    });
+
+    new Vue({
+      el: "#root2",
+      data: {
+        n: 1,
+      },
+    });
+  </script>
+</html>

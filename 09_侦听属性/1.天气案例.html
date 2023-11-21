@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>天气案例</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+
+    <div id="root">
+        <h2>今天的天气：{{info}}</h2>
+        <!--
+            绑定事件的时候，可以执行一些简单的语句，
+            但是如果需要执行的 操作比较多 的时候就 不推荐
+         -->
+        <!-- <button @click="isHot = !isHot">切换按钮</button> -->
+        <!-- 
+            这里的代码是被Vue维护的，能使用变量和函数只能是vm中存在的
+            不能直接使用例如alert()等window的函数或变量
+         -->
+        <button @click="isHot = !isHot">切换按钮</button>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    // 当改变的属性没有被使用的时候，vue的开发者工具，即浏览器中的插件，
+    // 将 不会更新显示属性的值，但 属性的值可能已经发生了改变
+    // 例： 不适用info，但是点击触发changeWeather()后，isHot的值已经改变，但是在开发者工具（浏览器插件）中并不更新显示
+    const vm = new Vue({
+        el:'#root',
+        data: {
+            isHot: true
+        },
+        computed: {
+            info() {
+                return this.isHot ? '炎热' : '凉爽';
+            }
+        },
+        methods: {
+            // changeWeather() {
+            //     this.isHot = !this.isHot;
+            // }
+        },
+    })
+
+</script>
+
+</html>

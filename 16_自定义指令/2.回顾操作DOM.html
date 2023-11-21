@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>回顾操作DOM</title>
+  </head>
+  <body>
+    <button id="btn">点我增加一个输入框</button>
+
+    <script type="text/javascript">
+      const btn = document.getElementById("btn");
+      btn.onclick = () => {
+        const input = document.createElement("input");
+
+        input.value = 10;
+        input.style.backgroundColor = "orange";
+
+        // 这里让input获取焦点是无效的，因为下面让该组件重新插入页面了
+        // input.focus();
+
+        // 1. 这里dom元素节点只是创建了出来，并没有父节点
+        // input.parentElement.style.backgroundColor = 'skyblue';
+
+        document.body.appendChild(input);
+
+        // 2. 这里由于已经追加到了body中，所以父元素就是body
+        input.parentElement.style.backgroundColor = "skyblue";
+        input.focus();
+      };
+    </script>
+  </body>
+</html>

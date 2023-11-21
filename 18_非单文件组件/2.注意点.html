@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>注意点</title>
+  <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+  <!-- 
+        几个注意点:
+            1.关于组件名:
+                一个单组成:
+                    第一种写法(首字母小写):school
+                    第二种写法(首字母大写):School
+                多个单词组成:
+                    第一种写法(kebab-case命名): my-school
+                    第二种写法(Upper CamelCase / PascalCase命名): MySchool (需要Vue脚手架支持)
+                
+                备注:
+                    (1).组件名尽可能回避HTML中已有的元素名称，例如: h2、H2都不行.
+                    (2).可以使用name配置项指定组件在开发者工具中呈现的名字（首字母还是会被大写）
+            
+            2.关于组件标签:
+                第一种写法:<school></school>
+                第二种写法:<school/>
+                
+                备注:不用使用脚手架时，<school/>会导致后续组件不能渲染
+            
+            3.一个简写方式:
+                const school = Vue.extend(options) 
+                可简写为: 
+                const school = options
+
+                备注：
+                    Vue底层检测到组件参数直接是一个配置对象的时候会自动调用Vue.extend()
+     -->
+
+  <div id="root">
+    <person></person>
+    <person />
+    <person />
+    <person />
+    <person></person>
+  </div>
+</body>
+
+<script type="text/javascript">
+  Vue.config.productionTip = false;
+
+  const person = {
+    name: "ohterperson",
+    template: `
+            <div>
+                <h2>{{name}}</h2>
+            </div>
+        `,
+    data() {
+      return {
+        name: "tyler",
+      };
+    },
+  };
+
+  new Vue({
+    el: "#root",
+    data: {},
+    components: {
+      person,
+    },
+  });
+</script>
+
+</html>

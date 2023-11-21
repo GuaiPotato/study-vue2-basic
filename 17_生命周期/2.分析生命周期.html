@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>分析生命周期</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="root">
+        <h2>{{n}}</h2>
+        <button @click="add">点我让n + 1</button>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    new Vue({
+        el: '#root',
+        // template:`
+        //     <div>    
+        //         <h2>{{n}}</h2>
+        //         <button @click="add">点我让n + 1</button>
+        //     </div>
+        // `,
+        data: {
+            n: 1
+        },
+        methods: {
+            add() {
+                this.n++;
+            }
+        },
+
+        //生命周期：
+
+        //挂载流程：
+        beforeCreate() {
+            // 初始化 生命周期、事件，但没有数据代理
+            // vm中没有_data, methods等
+            console.log('beforeCreated');
+        },
+        created() {
+            // 初始化 数据监视、数据代理
+            // 可以访问vm中的 _data, methods等
+            console.log('created');
+        },
+        beforeMount() {
+            // Vue已经完成了对模板的解析，生成了虚拟DOM，但还没有在页面中进行展示。
+            // 页面显示为 未经vue编译的 DOM结构
+            // 在这里对DOM的操作都将在mounted中被替换，即 在这里操作DOM是无效的
+            console.log('beforeMount');
+        },
+        mounted() {
+            // 挂载完毕
+            // 页面显示为经过vue编译的DOM
+            // 在这里可以对DOM进行操作，但是不建议；
+            // 一般进行的操作：开启定时器、发送网络请求、订阅消息、绑定自定义事件 等初始化操作
+            console.log('mounted');
+        },
+
+
+        // 更新流程：
+        // 触发：数据更新时
+        beforeUpdate() {
+            // 页面与数据尚未同步： 数据是新的，页面是旧的
+            console.log('beforeUpdate');
+        },
+        updated() {
+            // 页面与数据同步：根据新数据生成的新虚拟DOM与旧DOM进行diff比较，完成Model -> View的更新
+            console.log('updated');
+        },
+
+
+        // 销毁流程
+        // 触发：调用 vm.$destroy()
+        // vm.$destroy()： 完全销毁一个实例，及其与其它组件实例的连接
+        beforeDestroy() {
+            // data, methods, 指令等都处于 可用状态
+            // 此时一般 关闭定时器、订阅消息、自定义事件等 收尾操作
+            console.log('beforeDestroy');
+        },
+        destroyed() {
+            // 
+            console.log('destroy');
+        },
+    })
+
+</script>
+
+</html>

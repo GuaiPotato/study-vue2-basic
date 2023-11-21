@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-pre 指令</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+        V-pre指令:
+            1.跳过其所在节点的编译过程，即vue跳过对节点的解析（包括指令和插值）。
+            2.可利用这个效果，可以跳过 没有 使用 指令语法 / 插值语法 的节点，加快编译。
+     -->
+
+    <div id="root">
+        <h2>Vue's command: v-pre</h2>
+        <h2 v-pre>{{n}}</h2>
+        <button @click="n++">点我让n + 1</button>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    new Vue({
+        el:'#root',
+        data:{
+            n: 1
+        }
+    })
+
+</script>
+
+</html>

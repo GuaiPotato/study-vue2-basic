@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>绑定样式</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+      .basic {
+        width: 400px;
+        height: 100px;
+        border: 1px solid black;
+      }
+      .happy {
+        background-color: red;
+      }
+      .sad {
+        background-color: blue;
+      }
+      .normal {
+        background-color: green;
+      }
+
+      .style1 {
+        background-color: skyblue;
+      }
+
+      .style2 {
+        padding: 70px;
+        font-size: 30px;
+        color: orange;
+      }
+
+      .style3 {
+        border-radius: 30%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 
+        绑定样式:
+            1.class样式
+                写法:
+                    class="xxx”xxx可以是字符串、对象、数组。
+                字符串写法适用于:类名不确定，要动态获取。
+                对象写法适用于:要绑定多个样式，个数不确定，名字也不确定。
+                数组写法适用于:要绑定多个样式，个数确定，名字也确定，但不确定用不用,
+
+            2.style样式
+                写法:
+                    :style="{fontSize: xxx + 'px'}"，其中xxx是动态值。注意这里是fongSize，而非fontsize，或font-size
+                    :style="styleObj"，其中 styleObj是样式对象，即{fontSize: xxx + 'px'}
+                    :style="styleArr"，其中 styleArr是包含样式对象的数组
+     -->
+
+    <div id="root">
+      <!-- 
+            绑定class样式 --- 字符串写法。
+            适用场景：
+                样式的 个数确定、 类名不确定，需要动态指定
+         -->
+      <div class="basic" :class="mood" @click="changeMood">{{name}}</div>
+      <br />
+      <br />
+
+      <!-- 
+            绑定class样式 --- 数组写法
+            适用场景:
+                要绑定的样式 个数不确定、 类名也不确定
+         -->
+      <div class="basic" :class="classArr" @click="changeMood">{{name}}</div>
+
+      <!-- 
+            绑定class样式 --- 对象写法 
+            适用场景:
+                要绑定的样式的 个数确定、 类名确定，但是需要动态切换使用的样式
+         -->
+      <div class="basic" :class="classObj">{{name}}</div>
+
+      <!-- 
+            绑定style样式 --- 字符串写法
+         -->
+      <div class="basic" :style="{fontSize: fSize + 'px'}">{{name}}</div>
+
+      <!-- 
+            绑定style样式 --- 对象写法
+         -->
+      <!-- 常用： -->
+      <div class="basic" :style="styleObj">{{name}}</div>
+
+      <!--
+            绑定style样式 --- 数组写法
+          -->
+      <!-- <div class="basic" :style="[styleObj, styleObj2]">{{name}}</div> -->
+      <div class="basic" :style="styleArr">{{name}}</div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+      el: "#root",
+      data: {
+        name: "tyler",
+        mood: "normal",
+        classArr: ["style1", "style2", "style3"],
+        classObj: {
+          style1: false,
+          style2: false,
+        },
+        fSize: 40,
+        styleObj: {
+          fontSize: "40px",
+          color: "red",
+        },
+        styleObj2: {
+          backgroundColor: "orange",
+        },
+        styleArr: [
+          {
+            fontSize: "40px",
+            color: "blue",
+          },
+          {
+            backgroundColor: "gray",
+          },
+        ],
+      },
+      methods: {
+        changeMood() {
+          const arr = ["happy", "sad", "normal"];
+          const index = Math.floor(Math.random() * 3);
+          this.mood = arr[index];
+        },
+      },
+    });
+  </script>
+</html>

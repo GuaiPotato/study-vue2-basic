@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue数据检测的原理_总结</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 
+        _data中的数据劫持：
+            _data 中的数据发生改变后，会被setter捕获，这就被称为 数据劫持。
+
+        Vue监视数据的原理:
+            1.vue会监视data中所有层次的数据
+            2.如何监测对象中的数据?
+                通过setter实现监视，且要在new Vue时就传入要监测的数据
+                    (1).对象中后追加的属性，Vue默认不做响应式处理
+                    (2).如需给后添加的属性做响应式，请使用如下API:
+                        Vue.set(target，propertyName/index， value) 
+                        或 vm.$set(target,propertyName/index, value)
+            3.如何监测数组中的数据?
+                通过包裹数组更新元素的方法实现，本质就是做了两件事:
+                    (1).调用原生对应的方法对数组进行更新。
+                    (2).重新解析模板，进而更新页面。
+            4.在Vue修改数组中的某个元素一定要用如下方法:
+                1.使用这些API:push()、pop()、shift()、unshift()、splice()、sort()、reverse()
+                2.Vue.set() 或 vm.$set()
+                补充：例如 filter(), concat(), slice() 不影响原数组的，可以使用新数组替换原数组。
+        特别注意: Vue.set() 和 vm.$set() 不能给 vm 或 vm的根数据对象(vm._data) 添加属性!!!
+     -->
+
+    <div id="root">
+        <h1>个人信息</h1>
+        <h2>姓名： {{person.name}}</h2>
+        <h2>性别： {{person.gender}}</h2>
+        <h2>国籍： {{person.country}}</h2>
+        <h2 v-if="person.age !== undefined">年龄：{{person.age}}</h2>
+        <h2>朋友圈：</h2>
+        <ul>
+            <li v-for="(friend, index) in friendCircle" :key="index">{{friend.name}} --- {{friend.gender}}</li>
+        </ul>
+        <h2>爱好：</h2>
+        <li v-for="(hobby, index) in hobbies" :key="index">{{hobby}}</li>
+        <hr>
+        <button @click="modName">修改姓名为 Davis</button><br />
+        <button @click="addAttriAge">添加属性age, 默认值为18</button><br />
+        <button @click="person.age++">属性age + 1</button><br />
+        <button @click="addFirendFirst">在列表首位添加一个朋友</button><br />
+        <button @click="modFriendName">修改第一个朋友的姓名为张三</button><br />
+        <button @click="addHobby">追加一个爱好：熬夜</button><br />
+        <button @click="removeHobbyMoYu">移除爱好：摸鱼</button><br />
+        <button @click="modFirstHobby">修改第一个爱好为：码字</button>
+    </div>
+
+</body>
+
+<script>
+
+</script>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    new Vue({
+        el: '#root',
+        data: {
+            person: {
+                name: 'Tyler',
+                gender: 'male',
+                country: 'china'
+            },
+            friendCircle: [
+                { name: 'jack', gender: 'male' },
+                { name: 'john', gender: 'male' }
+            ],
+            hobbies: ['家里蹲', '摸鱼', '打电动']
+        },
+        methods: {
+            modName() {
+                this.person.name = 'Davis';
+            },
+            addAttriAge() {
+                // this.$set(this.person, 'age', 18);
+                Vue.set(this.person, 'age', 18);
+            },
+            addFirendFirst() {
+                this.friendCircle.unshift({
+                    name: 'sandy',
+                    gender: 'female'
+                })
+            },
+            modFriendName() {
+                this.friendCircle[0].name = '张三';
+            },
+            addHobby() {
+                this.hobbies.push('熬夜');
+            },
+            modFirstHobby() {
+                // 使用 Vue.set() 修改，vm.$set() 同理
+                // Vue.set(this.hobbies, 0, '码字');
+
+                this.hobbies.splice(0, 1, '码字');
+            },
+            removeHobbyMoYu() {
+                this.hobbies = this.hobbies.filter((val) => {
+                    return val !== '摸鱼';
+                })
+            }
+        },
+    })
+
+</script>
+
+</html>

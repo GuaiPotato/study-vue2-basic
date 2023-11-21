@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>天气案例_侦听属性</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- 
+        侦听属性watch:
+            1.当被侦听的属性变化时，回调函数自动调用，进行相关操作
+            2.侦听的属性必须存在，才能进行侦听!!
+            3.侦听的两种写法：
+                (1).new Vue时传入watch配置
+                (2).通过vm.$watch侦听
+     -->
+
+    <div id="root">
+        <h2>今天的天气：{{info}}</h2>
+        <button @click="changeWeather">切换按钮</button>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: '#root',
+        data: {
+            isHot: true
+        },
+        computed: {
+            info() {
+                return this.isHot ? '炎热' : '凉爽';
+            }
+        },
+        methods: {
+            changeWeather() {
+                this.isHot = !this.isHot;
+            }
+        },
+        // watch: {
+        //     isHot: {
+        //         // 初始化时，handler被调用，默认值为false
+        //         // immediate: true,
+
+        //         // handler()何时被调用？
+        //         // 当isHot发生改变的时候。
+        //         handler(newValue, oldValue) {
+        //             console.log('isHot被修改', newValue, oldValue);
+        //         }
+        //     },
+        //     // 计算属性的改变也可以被侦听
+        //     // info: {
+        //     //     immediate: true,
+        //     //     handler(newValue, oldValue) {
+        //     //         console.log('info被修改', newValue, oldValue);
+        //     //     }
+        //     // }
+        // }
+    })
+
+    // 也可以在这里使用vm进行配置
+    vm.$watch('isHot', {
+        immediate: true,
+        handler(newValue, oldValue) {
+            console.log('isHot被修改', newValue, oldValue);
+        }
+    })
+
+</script>
+
+</html>

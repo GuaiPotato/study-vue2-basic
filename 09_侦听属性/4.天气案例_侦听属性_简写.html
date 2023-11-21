@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>天气案例_侦听属性_简写</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- 
+     -->
+
+    <div id="root">
+        <h2>今天的天气：{{info}}</h2>
+        <button @click="changeWeather">切换按钮</button>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: '#root',
+        data: {
+            isHot: true,
+            numbers: {
+                a: 1,
+                b: 1
+            }
+        },
+        computed: {
+            info() {
+                return this.isHot ? '炎热' : '凉爽';
+            }
+        },
+        methods: {
+            changeWeather() {
+                this.isHot = !this.isHot;
+            }
+        },
+        watch: {
+            // 完整写法:
+            // isHot: {
+            //     // immediate,  // 初始化的时候调用handler
+            //     // deep,   // 深度侦听
+            //     handler(newValue, oldValue) {
+            //         console.log('isHot被修改', newValue, oldValue);
+            //     }
+            // }
+            //
+            // 简写:
+            // 只有handler的时候，可以使用简写，即不配置immediate等；
+            // isHot(newValue, oldValue) {
+            //     console.log('isHot被修改了', newValue, oldValue);
+            // }
+        }
+    });
+
+    // 第二种侦听 的 简写：
+    // 使用条件与上面相同，不能只用deep等配置
+    // 依旧不能使用箭头函数，会造成this变成window，而非vm
+    vm.$watch('isHot', function(newValue, oldValue) {
+        console.log('isHot被修改了', newValue, oldValue);
+    })
+
+</script>
+
+</html>

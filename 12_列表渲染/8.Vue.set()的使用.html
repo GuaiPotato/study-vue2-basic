@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.set()的使用</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+
+    <div id="root">
+        <h1>个人信息</h1>
+        <h2>姓名：{{name}}</h2>
+        <h2>国籍：{{country}}</h2>
+        <!-- 
+            gender不能通过 Vue.set() 或者是 vm.$set() 方法添加;
+            原因：
+                Vue不允许使用Vue.set()或vm.$set()方法在 _data下 或者 vm下 添加属性
+            解决：
+                增加一层结构，比如这里把 name, country, gender 整合为一个对象，对这个对象添加属性
+         -->
+        <h2>性别：{{gender}}</h2>
+        <hr/>
+        <h1>载具信息</h1>
+        <button @click="addAtributs">添加一个属性 --- 价格，默认为 0</button>
+        <h2>载具：{{transport.name}}</h2>
+        <h2>载具类型：{{transport.name}}，载具详细分类：{{transport.type.detailType}}</h2>
+        <h2 v-if="transport.price !== undefined">价格：{{transport.price}}</h2>
+        <hr/>
+        <h2>朋友圈</h2>
+        <ul>
+            <li v-for="(friend, index) in friendCircle" :key="index">{{friend.name}} -- {{friend.age}}</li>
+        </ul>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el:'#root',
+        // Vue 会对data所有数据添加getter和setter，
+        // 包括 所有对象的属性 和 所有数组中的元素， 
+        // Vue会 递归 遍历所有的层级， 即 Vue会一直追溯到最深层的 对象的属性
+        data:{
+            name: 'tyler',
+            country: 'china',
+            transport: {
+                name:'kawasaki nijia 250',
+                type: {
+                    name: 'mote',
+                    detailType: 'Street Bike'
+                },
+            },
+            friendCircle: [
+                {name: 'jack', age: 18},
+                {name: 'john', age: 30}  
+            ]
+        },
+        methods: {
+            addAtributs() {
+                // Vue.set()
+                // Vue.set(this.transport, 'price', 0);
+
+                // vm.$set()
+                this.$set(this.transport, 'price', 0);
+
+                // 这两个方法也可以对 数组进行操作，key值为数组元素的索引值
+            }
+        },
+    })
+
+</script>
+
+
+</html>

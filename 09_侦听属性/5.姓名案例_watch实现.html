@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>姓名案例_watch实现</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- 
+        computed和watch之间的区别:
+            1.computed能完成的功能，watch都可以完成。
+            2.watch能完成的功能，computed不一定能完成，
+                例如: watch可以进行异步操作。
+            两个重要的小原则:
+                1.所被Vue管理的函数，最好写成普通函数，这样this的指向才是vm 或 组件实例对象。
+                2.所有不被Vue所管理的函数(定时器的回调函数、ajax的回调函数、Promise的回调函数等)，最好写成箭头函数,
+                  这样this的指向才是vm 或 组件实例对象。
+     -->
+
+    <div id="root">
+        姓：<input type="text" v-model="firstName"> <br /> <br />
+        名：<input type="text" v-model="lastName"> <br /> <br />
+        <!--  -->
+        完整姓名：<span>{{fullName}}</span> <br /> <br />
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: '#root',
+        data: {
+            firstName: '张',
+            lastName: '三',
+            fullName:'张-三'
+        },
+        watch: {
+            firstName(val) {
+                // 相比 computed，watch可以做一些异步操作（计时器）
+                console.log(this);
+                // 这里一定要使用箭头函数，不然定时器里的this会变成window
+                // 原因：
+                // setTimeout 是一个内置的全局函数，它并不属于 Vue 实例的一部分，
+                // 因此它自己的 this（在箭头函数中）是全局的 window。
+                // 然而，由于箭头函数是 firstName 的回调函数，这样箭头函数继承了 firstName 的 this（即 Vue 实例），
+                // 因此在箭头函数内，this 就指向了 Vue 实例。
+                // 
+                // 如果写成了普通函数，即function(){}，
+                // 由于这个函数不受 Vue 管理，所以它的 this 就是全局的 window。
+                // 
+                // 补充：
+                // 回调函数：
+                //      回调函数是一种在特定事件之后执行的函数，通常用于处理异步操作。
+                //      在JavaScript中，回调函数通常作为参数传递给其他函数，并在适当的时候被执行。
+                // 
+                // 这里的箭头函数是作为参数传递给 setTimeout 的，所以这个箭头函数是回调函数。
+                setTimeout(() => {
+                    return this.fullName = val + '-' + this.lastName;
+                }, 1000);
+            },
+            lastName(val) {
+                console.log(this);
+                return this.fullName = this.firstName + '-' + val;
+            }
+        },
+    })
+
+</script>
+
+</html>

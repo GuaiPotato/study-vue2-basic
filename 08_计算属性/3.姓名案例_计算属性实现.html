@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>姓名案例_计算属性实现</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+    <!-- 
+        计算属性:
+            1.定义:要用的属性不存在，要通过已有属性计算得米。
+                注意：
+                    这里计算的是属性，也就说如果在计算属性中使用了变量，那么就不会触发重新计算
+            2.原理: 底层借助了objcet.defineProperty方法提供的getter和setter。
+            3.get函数什么时候执行?
+                (1).初次读取时会执行一次。
+                (2).当依赖的数据发生改变时会被再次调用。
+            4.优势:与methods实现相比，内部有缓存机制(复用) ，效率更高，调试方便。
+            5.备注:
+                1.计算属性最终会出现在vm上，直接读取使用即可。也就是说，不要尝试对计算属性使用get()。
+                2.如果计算属性要被修改，那必须写set函数去响应修改，且set中要引起计算时依赖的数据发生改变
+     -->
+
+    <div id="root">
+        姓：<input type="text" v-model="firstName"> <br /> <br />
+        名：<input type="text" v-model="lastName"> <br /> <br />
+        <!--  -->
+        完整姓名：<span>{{fullName}}</span> <br /> <br />
+        完整姓名：<span>{{fullName}}</span> <br /> <br />
+        完整姓名：<span>{{fullName}}</span>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: '#root',
+        data: {
+            firstName: '张',
+            lastName: '三'
+        },
+        computed: {
+            // fullName在被计算完成以后会维护在 缓存 中
+            // 注意：
+            //      这里fullName是作为vm的一个属性值，是一个值，是调用get()后的值
+            fullName: {
+                // get()的返回值就作为fullName的值
+                // 
+                // get()被调用的时候：
+                // 1.初次读取 fullName时；
+                // 2.所依赖的数据（也就是这里的 firstName和 lastName）发生变化的时。
+                // 
+                // 底层就是Object.defineProperty，与data中的属性相似
+                // Vue将get()中的this维护成为vm
+                get() {
+                    console.log('get()被调用了');
+                    return this.firstName + '-' + this.lastName;
+                },
+                // 可以不写set()，但是如果你确定这个计算属性会被修改，那么必须写。
+                // 如果没有set()而尝试修改计算属性，则会报错。
+                // 
+                // set()被调用的时候：
+                // 1.fullName被修改的时候
+                // 
+                // 想要修改fullName的值，其实就是修改所依赖的值(firstName 和 lastName)，从而触发重新计算fullName
+                set(value) {
+                    // 这里的姓名使用 '-' 连接 姓 和 名， 是便于js分辨 姓 和 名，分别是什么
+                    // 所以这里的value也必须按照这个格式
+                    console.log('set', value);
+                    const arr = value.split('-');
+                    this.firstName = arr[0];
+                    this.lastName = arr[1];
+                }
+            }
+        }
+    })
+
+</script>
+
+</html>

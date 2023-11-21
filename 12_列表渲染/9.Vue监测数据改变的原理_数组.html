@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue监测数据改变的原理_数组</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="root">
+        <h2>姓名：{{person.name}}</h2>
+        <h2>国籍：{{person.country}}</h2>
+        <h2>爱好</h2>
+        <!-- 
+            想要对 数组 中的元素进行响应式的修改，必须使用Vue 为数组的添加方法:
+            push(), pop(),
+            unshift(), shift(),
+            splice(), sort(), reverse()
+
+            注意：
+                这里的方法与 数组原生的，即 Arrays 的方法是不一样的，
+                Vue为数组添加的方法是在修改数组的基础上更新页面。
+        -->
+        <ul>
+            <li v-for="(hobby, index) in person.hobbies" :key="index">{{hobby}}</li>
+        </ul>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    const vm = new Vue({
+        el: '#root',
+        data: {
+            person: {
+                name: 'tyler',
+                country: 'china',
+                hobbies: ['家里蹲', '摸鱼', '打电动'],
+            },
+            transport: {
+                name: 'kawasaki nijia 250',
+                type: {
+                    name: 'mote',
+                    type: 'Street Bike'
+                },
+            },
+            friendCircle: [
+                { name: 'jack', age: 18 }
+            ]
+        }
+    })
+
+</script>
+
+</html>

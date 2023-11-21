@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>收集表单数据</title>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      #root {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+
+      form {
+        padding: 50px;
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 5%;
+        box-shadow: 2px 2px 5px rgb(232, 227, 227);
+        background-color: #f5f5f5;
+      }
+
+      label {
+        display: inline-block;
+        width: 80px;
+        text-align: left;
+        margin-right: 10px;
+      }
+
+      input[type="text"] {
+        width: 250px;
+        margin-bottom: 10px;
+      }
+
+      input[type="radio"] {
+        margin-right: 20px;
+      }
+
+      .gender-label {
+        width: auto;
+        margin-left: 10px;
+        margin-right: 0px;
+      }
+
+      label[name="hobby_opt"] {
+        width: auto;
+        margin-left: 10px;
+      }
+
+      textarea {
+        display: inline-block;
+        height: 50px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 
+        收集表单数据:
+            收集的是value值，用户输入的就是value值。
+                若: <input type="text"/>，则v-model!
+                若:<input type="radio"/>，则v-mode.收集的是value值，且要给标签配置value值。
+                若: <input type="checkbox"/>
+                    1.没有配置input的value属性，那么收集的就是checked (勾选 or 未勾选，是布尔值)
+                    2.配置input的value属性:
+                        (1)v-model的初始值是非数组，那么收集的就是checked(勾选 or 未勾选，是布尔值)
+                        (2)v-model的初始值是数组，那么收集的的就是value组成的数组
+
+        备注: 
+            v-model的三个修饰符:
+                lazy:输入框失去焦点再收集数据
+                number:输入字符串转为有效的
+                trim:输入首尾空格过滤
+     -->
+
+    <div id="root">
+      <!-- 不使用action，from只是作为数据呈现的一个结构，应该使用ajax在 不刷新的情况下 获取和发送数据 -->
+      <form @submit.prevent="alert">
+        <!-- 使用<label></lable> 可以使label标签 和 input标签 绑定，效果：点击lable，input可以被获取焦点 -->
+        <label for="account">账号：</label>
+        <!-- 
+                Vue 提供的 v-model.trim 与字符出的trim函数功能相同
+             -->
+        <input
+          type="text"
+          value=""
+          id="account"
+          v-model="userInfo.account"
+        /><br /><br />
+        <label for="pwd">密码：</label>
+        <input
+          type="password"
+          value=""
+          id="pwd"
+          v-model="userInfo.pwd"
+        /><br /><br />
+        <label for="age">年龄：</label>
+        <!-- 
+                number是原生html提供的文本框，限定文本框内容只能为数字，并提供了加减的按钮
+                但是这里的数据是字符串，
+                Vue 提供的 v-model.number 将字符串转换为 数字
+                一般同时使用，一个是限定输入，一个是将输入类型转换
+             -->
+        <input
+          type="number"
+          value=""
+          id="age"
+          v-model.number="userInfo.age"
+        /><br /><br />
+        <label for="gender_male">性别：</label>
+        <!-- 
+                单选框不能输入，所以不能直接使用 v-model="gender"，这样会导致gender = null 
+                需要在单选框中设置 value 属性值
+                如果想要默认选择某个选项，则可以在data中设置 相印的数据 为默认值。
+             -->
+        <label class="gender-label" value="male" for="gender_male">男</label>
+        <input
+          type="radio"
+          value="male"
+          name="gender"
+          id="gender_male"
+          v-model="userInfo.gender"
+        />
+        <label class="gender-label" value="female" for="gender_female"
+          >女</label
+        >
+        <input
+          type="radio"
+          value="female"
+          name="gender"
+          id="gender_female"
+          v-model="userInfo.gender"
+        /><br /><br />
+        <label for="hobby" style="margin-top: 10px">爱好：</label>
+        <!-- 
+                复选框也需要设置value值，不然默认就是读取checked，勾选为true，不勾选为false
+                复选框在vue中是每次勾选后逐个添加，
+                所以如果这里的hobby为字符串，第一次勾选（默认勾选）的值会影响hobby的值（只关注第一次的元素的值），并且仍然只能是checked的值
+             -->
+        <label for="hobby1" name="hobby_opt">摸鱼</label>
+        <input
+          type="checkbox"
+          id="hobby1"
+          value="mo_yu"
+          v-model="userInfo.hobby"
+        />
+        <label for="hobby2" name="hobby_opt">炸鱼</label>
+        <input
+          type="checkbox"
+          id="hobby2"
+          value="zha_yu"
+          v-model="userInfo.hobby"
+        />
+        <label for="hobby3" name="hobby_opt">红烧鱼</label>
+        <input
+          type="checkbox"
+          id="hobby3"
+          value="hong_shao_yu"
+          v-model="userInfo.hobby"
+        />
+        <br />
+        <label for="country" style="margin-top: 30px">国籍：</label>
+        <select v-model="userInfo.nationality">
+          <option value="cn">CN</option>
+          <option value="us">US</option>
+          <option value="uk">UK</option>
+          <option value="jp">JP</option>
+        </select>
+        <br />
+        <label style="vertical-align: top; margin-top: 30px">其它信息：</label>
+        <!-- 
+                Vue 提供的 v-model.lazy 将在输入框 失去焦点 的时候才进行修改
+             -->
+        <textarea
+          style="margin-top: 30px"
+          v-model.lazy="userInfo.otherInfo"
+        ></textarea>
+        <br />
+        <input type="checkbox" v-model="userInfo.isAccept" />
+        <label style="margin-top: 30px; margin-right: 0px">阅读并接受</label>
+        <a href="https://www.bilibili.com">用户协议</a>
+        <br />
+        <button style="margin-top: 30px">sign up</button>
+      </form>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    Vue.config.productionTip = false;
+
+    new Vue({
+      el: "#root",
+      data: {
+        userInfo: {
+          account: "",
+          pwd: "",
+          age: "",
+          gender: "",
+          hobby: [],
+          nationality: "",
+          otherInfo: "",
+          isAccept: false,
+        },
+      },
+      methods: {
+        alert() {
+          // console.log(JSON.stringify(this._data));
+          console.log(JSON.stringify(this.userInfo));
+        },
+      },
+    });
+  </script>
+</html>
